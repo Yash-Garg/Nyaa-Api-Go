@@ -32,5 +32,6 @@ func main() {
 	}))
 
 	app.Get("/", helpers.Status)
+	app.Get("/nyaa", helpers.GetNyaa)
 	_ = app.Listen(getPort())
 }
