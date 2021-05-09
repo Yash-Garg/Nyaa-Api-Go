@@ -2,17 +2,15 @@ package helpers
 
 import (
 	"fmt"
-	"github.com/Yash-Garg/nyaa-api-go/models"
 	"net/http"
-
-	"github.com/PuerkitoBio/goquery"
-	"github.com/gocolly/colly/v2"
-	log "github.com/sirupsen/logrus"
-
 	"strings"
 
+	"github.com/PuerkitoBio/goquery"
+	"github.com/Yash-Garg/nyaa-api-go/models"
 	"github.com/Yash-Garg/nyaa-api-go/utils"
+	"github.com/gocolly/colly/v2"
 	"github.com/gofiber/fiber/v2"
+	log "github.com/sirupsen/logrus"
 )
 
 func CheckNyaaUrl() string {
