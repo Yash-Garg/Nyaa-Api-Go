@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"fmt"
+	"github.com/Yash-Garg/nyaa-api-go/models"
 	"net/http"
 
 	"github.com/PuerkitoBio/goquery"
@@ -25,16 +26,35 @@ func CheckNyaaUrl() string {
 
 func GetNyaa(resp *fiber.Ctx) error {
 	baseUrl := CheckNyaaUrl()
-	var query string = strings.ReplaceAll(resp.Query("q"), " ", "+")
-	var searchUrl string = baseUrl + "?q=" + strings.TrimSpace(query)
+	query := strings.ReplaceAll(resp.Query("q"), " ", "+")
+	searchUrl := baseUrl + "?q=" + strings.TrimSpace(query)
 	c := colly.NewCollector()
-	// torrents := make([]models.Torrent, 0)
+	torrents := make([]models.TorrentLinks, 0)
 
-	c.OnHTML("tbody", func(e *colly.HTMLElement) {
-		e.DOM.Each(func(i int, selection *goquery.Selection) {
-			// t := models.Torrent{}
-			fmt.Print(selection.Find("td:nth-child(2) a").Text())
+	c.OnHTML("tbody", func(element *colly.HTMLElement) {
+		element.DOM.Each(func(i int, selection *goquery.Selection) {
+			t := models.TorrentLinks{}
+			selection.Find("tr td:nth-child(2) a").Each(func(i int, selection *goquery.Selection) {
+				if !selection.HasClass("comments") {
+					t.Title, _ = selection.Attr("title")
+					torrentLink, _ := selection.Attr("href")
+					t.Link = baseUrl + torrentLink
+					torrents = append(torrents, t)
+				}
+			})
 		})
+	})
+
+	c.OnScraped(func(response *colly.Response) {
+		if len(torrents) <= 0 {
+			resp.Status(204)
+		} else {
+			_ = resp.Status(200).JSON(torrents)
+		}
+	})
+
+	c.OnError(func(response *colly.Response, err error) {
+		fmt.Printf("{ response : %d, error: %s}", response.StatusCode, err)
 	})
 
 	err := c.Visit(searchUrl)

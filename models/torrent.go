@@ -8,6 +8,5 @@ type Torrent struct {
 	Size        string `json:"size"`
 	File        string `json:"file"`
 	Information string `json:"information"`
-	Link        string `json:"link"`
 	Magnet      string `json:"magnet"`
 }
