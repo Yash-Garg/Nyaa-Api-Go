@@ -2,10 +2,11 @@ package helpers
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gocolly/colly/v2"
 	log "github.com/sirupsen/logrus"
-	"net/http"
 
 	"strings"
 
