@@ -4,7 +4,6 @@ import (
 	"os"
 
 	"github.com/Yash-Garg/nyaa-api-go/helpers"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/basicauth"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -33,5 +32,5 @@ func main() {
 	}))
 
 	app.Get("/", helpers.Status)
-	app.Listen(getPort())
+	_ = app.Listen(getPort())
 }
