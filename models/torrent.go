@@ -2,6 +2,7 @@ package models
 
 type Torrent struct {
 	Title    string `json:"title"`
+	Category string `json:"category"`
 	Uploaded string `json:"uploaded"`
 	Seeders  int    `json:"seeders"`
 	Leechers int    `json:"leechers"`

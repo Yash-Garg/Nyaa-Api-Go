@@ -44,6 +44,7 @@ func GetNyaa(resp *fiber.Ctx) error {
 						t.Link = baseUrl + torrentPath
 					}
 				})
+				t.Category, _ = selection.Find("td:nth-child(1) a").Attr("title")
 				filePath, _ := selection.Find("td:nth-child(3) a:nth-child(1)").Attr("href")
 				t.File = baseUrl + filePath
 				t.Magnet, _ = selection.Find("td:nth-child(3) a:nth-child(2)").Attr("href")
