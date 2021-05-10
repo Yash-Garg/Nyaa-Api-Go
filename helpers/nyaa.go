@@ -3,6 +3,7 @@ package helpers
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -26,12 +27,9 @@ func GetNyaa(resp *fiber.Ctx) error {
 	baseUrl := CheckNyaaUrl()
 	searchQuery := strings.ReplaceAll(resp.Query("q"), " ", "+")
 
-	pageNum := resp.Query("p")
-	if pageNum == "" {
-		pageNum = "1"
-	}
+	pageNum, _ := strconv.Atoi(resp.Query("p"))
 
-	searchUrl := baseUrl + "?q=" + strings.TrimSpace(searchQuery) + "&p=" + pageNum
+	searchUrl := fmt.Sprintf("%s?q=%s&p=%d", baseUrl, strings.TrimSpace(searchQuery), pageNum)
 	c := colly.NewCollector()
 	torrents := make([]models.Torrent, 0)
 
@@ -51,8 +49,8 @@ func GetNyaa(resp *fiber.Ctx) error {
 				t.Magnet, _ = selection.Find("td:nth-child(3) a:nth-child(2)").Attr("href")
 				t.Size = selection.Find("td:nth-child(4)").Text()
 				t.Uploaded = selection.Find("td:nth-child(5)").Text()
-				t.Seeders = selection.Find("td:nth-child(6)").Text()
-				t.Leechers = selection.Find("td:nth-child(7)").Text()
+				t.Seeders, _ = strconv.Atoi(selection.Find("td:nth-child(6)").Text())
+				t.Leechers, _ = strconv.Atoi(selection.Find("td:nth-child(7)").Text())
 				torrents = append(torrents, t)
 			})
 		})
