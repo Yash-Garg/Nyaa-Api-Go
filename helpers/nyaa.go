@@ -29,7 +29,16 @@ func GetNyaa(resp *fiber.Ctx) error {
 
 	pageNum, _ := strconv.Atoi(resp.Query("p"))
 
-	searchUrl := fmt.Sprintf("%s?q=%s&p=%d", baseUrl, strings.TrimSpace(searchQuery), pageNum)
+	// Parameters Accepted - size | seeders | leechers | downloads | date
+	sortParam := resp.Query("s")
+	if sortParam == "date" {
+		sortParam = "id"
+	}
+
+	// Orders Accepted - asc | desc
+	sortOrder := resp.Query("o")
+
+	searchUrl := fmt.Sprintf("%s?q=%s&p=%d&s=%s&o=%s", baseUrl, strings.TrimSpace(searchQuery), pageNum, sortParam, sortOrder)
 	c := colly.NewCollector()
 	torrents := make([]models.Torrent, 0)
 
