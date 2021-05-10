@@ -24,21 +24,36 @@ func CheckNyaaUrl() string {
 
 func GetNyaa(resp *fiber.Ctx) error {
 	baseUrl := CheckNyaaUrl()
-	query := strings.ReplaceAll(resp.Query("q"), " ", "+")
-	searchUrl := baseUrl + "?q=" + strings.TrimSpace(query)
+	searchQuery := strings.ReplaceAll(resp.Query("q"), " ", "+")
+
+	pageNum := resp.Query("p")
+	if pageNum == "" {
+		pageNum = "1"
+	}
+
+	searchUrl := baseUrl + "?q=" + strings.TrimSpace(searchQuery) + "&p=" + pageNum
 	c := colly.NewCollector()
-	torrents := make([]models.TorrentLinks, 0)
+	torrents := make([]models.Torrent, 0)
 
 	c.OnHTML("tbody", func(element *colly.HTMLElement) {
 		element.DOM.Each(func(i int, selection *goquery.Selection) {
-			t := models.TorrentLinks{}
-			selection.Find("tr td:nth-child(2) a").Each(func(i int, selection *goquery.Selection) {
-				if !selection.HasClass("comments") {
-					t.Title, _ = selection.Attr("title")
-					torrentLink, _ := selection.Attr("href")
-					t.Link = baseUrl + torrentLink
-					torrents = append(torrents, t)
-				}
+			t := models.Torrent{}
+			selection.Find("tr").Each(func(i int, selection *goquery.Selection) {
+				selection.Find("td:nth-child(2) a").Each(func(i int, selection *goquery.Selection) {
+					if !selection.HasClass("comments") {
+						t.Title, _ = selection.Attr("title")
+						torrentPath, _ := selection.Attr("href")
+						t.Link = baseUrl + torrentPath
+					}
+				})
+				filePath, _ := selection.Find("td:nth-child(3) a:nth-child(1)").Attr("href")
+				t.File = baseUrl + filePath
+				t.Magnet, _ = selection.Find("td:nth-child(3) a:nth-child(2)").Attr("href")
+				t.Size = selection.Find("td:nth-child(4)").Text()
+				t.Uploaded = selection.Find("td:nth-child(5)").Text()
+				t.Seeders = selection.Find("td:nth-child(6)").Text()
+				t.Leechers = selection.Find("td:nth-child(7)").Text()
+				torrents = append(torrents, t)
 			})
 		})
 	})
