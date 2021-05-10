@@ -5,7 +5,7 @@ import (
 
 	"github.com/Yash-Garg/nyaa-api-go/helpers"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/basicauth"
+	//  "github.com/gofiber/fiber/v2/middleware/basicauth"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	log "github.com/sirupsen/logrus"
 )
@@ -25,11 +25,11 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New())
-	app.Use(basicauth.New(basicauth.Config{
-		Users: map[string]string{
-			"admin": "pass#1234",
-		},
-	}))
+	// 	app.Use(basicauth.New(basicauth.Config{
+	// 		Users: map[string]string{
+	// 			"admin": "pass#1234",
+	// 		},
+	// 	}))
 
 	app.Get("/", helpers.Status)
 	app.Get("/nyaa", helpers.GetNyaa)
