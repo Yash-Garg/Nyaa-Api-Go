@@ -1,0 +1,1 @@
+web: nyaa-api-go
