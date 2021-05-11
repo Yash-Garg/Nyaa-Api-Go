@@ -33,8 +33,10 @@ func main() {
 
 	app.Get("/", helpers.AliveHandler)
 
-	app.Get("/nyaa/:category/:sub_category?", helpers.GetNyaa)
-	app.Get("/about/file/:id", helpers.GetUploadInfo)
-	app.Get("/about/user/:userID", helpers.GetUserUploads)
+	v1 := app.Group("/nyaa", helpers.GroupHandler)
+
+	v1.Get("/:category/:sub_category?", helpers.GetNyaa)
+	v1.Get("/id/:id", helpers.GetUploadInfo)
+	v1.Get("/user/:userID", helpers.GetUserUploads)
 	_ = app.Listen(getPort())
 }
