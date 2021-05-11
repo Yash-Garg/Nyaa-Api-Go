@@ -33,7 +33,7 @@ func main() {
 
 	app.Get("/", helpers.AliveStatus)
 
-	app.Get("/nyaa/:category/:sub_category", helpers.GetNyaa)
+	app.Get("/nyaa/:category/:sub_category?", helpers.GetNyaa)
 
 	_ = app.Listen(getPort())
 }

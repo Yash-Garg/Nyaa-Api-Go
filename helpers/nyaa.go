@@ -23,21 +23,11 @@ func CheckNyaaUrl() string {
 	}
 }
 
-func GetSubCategoryID(c string, s string) string {
-	if c == "anime" {
-		return utils.AnimeSubCategoryMap[s]
-	} else if c == "manga" {
-		return utils.MangaSubCategoryMap[s]
-	} else if c == "audio" {
-		return utils.AudioSubCategoryMap[s]
-	} else if c == "live_action" {
-		return utils.LiveActionSubCategoryMap[s]
-	} else if c == "pictures" {
-		return utils.PicturesSubCategoryMap[s]
-	} else if c == "software" {
-		return utils.SoftwareSubCategoryMap[s]
+func GetCategoryID(c string, s string) string {
+	if len(s) == 0 {
+		return utils.NyaaEndpoints[c]["all"]
 	} else {
-		return "all"
+		return utils.NyaaEndpoints[c][s]
 	}
 }
 
@@ -56,9 +46,10 @@ func GetNyaa(resp *fiber.Ctx) error {
 	// Orders Accepted - asc | desc
 	sortOrder := resp.Query("o")
 
-	subCategory := GetSubCategoryID(resp.Params("category"), resp.Params("sub_category"))
+	subCategory := GetCategoryID(resp.Params("category"), resp.Params("sub_category"))
 
-	searchUrl := fmt.Sprintf("%s?q=%s&c=%s &p=%d&s=%s&o=%s", baseUrl, strings.TrimSpace(searchQuery), subCategory, pageNum, sortParam, sortOrder)
+	searchUrl := fmt.Sprintf("%s?q=%s&c=%s&p=%d&s=%s&o=%s", baseUrl, strings.TrimSpace(searchQuery), subCategory, pageNum, sortParam, sortOrder)
+
 	c := colly.NewCollector()
 	torrents := make([]models.Torrent, 0)
 
