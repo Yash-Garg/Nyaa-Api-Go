@@ -31,9 +31,10 @@ func main() {
 		},
 	}))
 
-	app.Get("/", helpers.AliveStatus)
+	app.Get("/", helpers.AliveHandler)
 
 	app.Get("/nyaa/:category/:sub_category?", helpers.GetNyaa)
-
+	app.Get("/about/file/:id", helpers.GetUploadInfo)
+	app.Get("/about/user/:userID", helpers.GetUserUploads)
 	_ = app.Listen(getPort())
 }

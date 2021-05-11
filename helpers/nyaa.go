@@ -97,3 +97,13 @@ func GetNyaa(resp *fiber.Ctx) error {
 	}
 	return nil
 }
+
+func GetUploadInfo(resp *fiber.Ctx) error {
+	_ = resp.SendString("Requested File ID -" + resp.Params("id"))
+	return nil
+}
+
+func GetUserUploads(resp *fiber.Ctx) error {
+	_ = resp.SendString("Requested User ID -" + resp.Params("userID"))
+	return nil
+}
