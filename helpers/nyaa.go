@@ -11,7 +11,6 @@ import (
 	"github.com/Yash-Garg/nyaa-api-go/utils"
 	"github.com/gocolly/colly/v2"
 	"github.com/gofiber/fiber/v2"
-	log "github.com/sirupsen/logrus"
 )
 
 func CheckNyaaUrl() string {
@@ -32,6 +31,7 @@ func GetCategoryID(c string, s string) string {
 }
 
 func GetNyaa(resp *fiber.Ctx) error {
+	searchUrl := ""
 	baseUrl := CheckNyaaUrl()
 	searchQuery := strings.ReplaceAll(resp.Query("q"), " ", "+")
 
@@ -48,7 +48,9 @@ func GetNyaa(resp *fiber.Ctx) error {
 
 	subCategory := GetCategoryID(resp.Params("category"), resp.Params("sub_category"))
 
-	searchUrl := fmt.Sprintf("%s?q=%s&c=%s&p=%d&s=%s&o=%s", baseUrl, strings.TrimSpace(searchQuery), subCategory, pageNum, sortParam, sortOrder)
+	if subCategory != "" {
+		searchUrl = fmt.Sprintf("%s?q=%s&c=%s&p=%d&s=%s&o=%s", baseUrl, strings.TrimSpace(searchQuery), subCategory, pageNum, sortParam, sortOrder)
+	}
 
 	c := colly.NewCollector()
 	torrents := make([]models.Torrent, 0)
@@ -79,7 +81,7 @@ func GetNyaa(resp *fiber.Ctx) error {
 
 	c.OnScraped(func(response *colly.Response) {
 		if len(torrents) <= 0 {
-			resp.Status(204)
+			_ = resp.SendString("Error: No results found")
 		} else {
 			_ = resp.Status(200).JSON(torrents)
 		}
@@ -91,7 +93,7 @@ func GetNyaa(resp *fiber.Ctx) error {
 
 	err := c.Visit(searchUrl)
 	if err != nil {
-		log.Fatal(err)
+		_ = resp.SendString("Error: Invalid Parameters")
 	}
 	return nil
 }
