@@ -31,7 +31,15 @@ func main() {
 		},
 	}))
 
-	app.Get("/", helpers.Status)
-	app.Get("/nyaa", helpers.GetNyaa)
+	app.Get("/", helpers.AliveStatus)
+
+	v1 := app.Group("/nyaa", helpers.GroupHandler)
+	v1.Get("/anime", helpers.GetNyaa)
+	// v1.Get("/manga")
+	// v1.Get("/audio")
+	// v1.Get("/pictures")
+	// v1.Get("/live_action")
+	// v1.Get("/software")
+
 	_ = app.Listen(getPort())
 }
