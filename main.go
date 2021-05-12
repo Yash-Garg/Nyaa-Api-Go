@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"os"
 
 	"github.com/gofiber/fiber/v2/middleware/basicauth"
@@ -26,6 +27,7 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New())
+	app.Use(favicon.New(favicon.Config{File: "static/favicon.png"}))
 	app.Use(basicauth.New(basicauth.Config{
 		Users: map[string]string{
 			"admin": "pass#1234",

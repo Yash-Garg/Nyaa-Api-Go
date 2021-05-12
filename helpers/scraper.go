@@ -1,11 +1,12 @@
 package helpers
 
 import (
+	"strconv"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/Yash-Garg/nyaa-api-go/models"
 	"github.com/gocolly/colly/v2"
 	"github.com/gofiber/fiber/v2"
-	"strconv"
 )
 
 func scrapeNyaa(resp *fiber.Ctx, searchUrl string) {
