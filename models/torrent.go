@@ -11,3 +11,9 @@ type Torrent struct {
 	Link     string `json:"link"`
 	Magnet   string `json:"magnet"`
 }
+
+type File struct {
+	Torrent
+	SubmittedBy string `json:"submittedBy"`
+	InfoHash    string `json:"infoHash"`
+}

@@ -25,7 +25,7 @@ func scrapeNyaa(resp *fiber.Ctx, searchUrl string) {
 	})
 
 	c.OnError(func(response *colly.Response, err error) {
-		_ = resp.SendString("{ response: 404, error: Not Found}")
+		_ = resp.SendString("{response: 404, error: Not Found}")
 	})
 
 	_ = c.Visit(searchUrl)
@@ -53,4 +53,33 @@ func torrentScraper(element *colly.HTMLElement) {
 			torrents = append(torrents, t)
 		})
 	})
+}
+
+func fileInfoScraper(resp *fiber.Ctx, searchUrl string) {
+	c := colly.NewCollector()
+	t := models.File{}
+
+	c.OnHTML("div.panel:nth-child(1)", func(e *colly.HTMLElement) {
+		t.Title = e.ChildText("h3")
+		t.Size = e.ChildText("div.row:nth-child(4) .col-md-5:nth-child(2)")
+		t.File = baseUrl + e.ChildAttr("div.panel-footer a", "href")
+		t.Category = e.ChildText("div.row:nth-child(1) .col-md-5:nth-child(2)")
+		t.Uploaded = e.ChildText("div.row:nth-child(1) .col-md-5:nth-child(4)")
+		t.InfoHash = e.ChildText("div.row:nth-child(5) .col-md-5:nth-child(2)")
+		t.Magnet = e.ChildAttr("div.panel-footer a:nth-child(2)", "href")
+		t.SubmittedBy = e.ChildText("div.row:nth-child(2) .col-md-5:nth-child(2)")
+		t.Seeders, _ = strconv.Atoi(e.ChildText("div.row:nth-child(2) .col-md-5:nth-child(4)"))
+		t.Leechers, _ = strconv.Atoi(e.ChildText("div.row:nth-child(3) .col-md-5:nth-child(4)"))
+		t.Link = searchUrl
+	})
+
+	c.OnError(func(response *colly.Response, err error) {
+		_ = resp.SendString("{response: 404, error: Not Found}")
+	})
+
+	c.OnScraped(func(response *colly.Response) {
+		_ = resp.Status(200).JSON(t)
+	})
+
+	_ = c.Visit(searchUrl)
 }

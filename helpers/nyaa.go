@@ -39,7 +39,8 @@ func GetUserUploads(resp *fiber.Ctx) error {
 
 func GetInfoFromID(resp *fiber.Ctx) error {
 	id := resp.Params("id")
-	// TODO: Implement file scraper function
-	_ = resp.SendString("Requested File ID - " + id)
+	searchUrl := baseUrl + "/view/" + id
+
+	fileInfoScraper(resp, searchUrl)
 	return nil
 }
