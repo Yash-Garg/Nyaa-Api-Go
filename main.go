@@ -33,6 +33,8 @@ func main() {
 	}))
 
 	app.Get("/", helpers.AliveHandler)
-	app.Get("/:category/:sub_category?", helpers.GetNyaa)
+	app.Get("/id/:id", helpers.GetInfoFromID)
+	app.Get("/user/:username", helpers.GetUserUploads)
+	app.Get("/:category/:sub_category?", helpers.GetCategoryTorrents)
 	_ = app.Listen(getPort())
 }
