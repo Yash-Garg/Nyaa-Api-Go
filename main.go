@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/gofiber/fiber/v2/middleware/basicauth"
 	"os"
+
+	"github.com/gofiber/fiber/v2/middleware/basicauth"
 
 	"github.com/Yash-Garg/nyaa-api-go/helpers"
 	"github.com/gofiber/fiber/v2"
