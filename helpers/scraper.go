@@ -14,7 +14,7 @@ func scrapeNyaa(resp *fiber.Ctx, searchUrl string) {
 
 	c.OnScraped(func(response *colly.Response) {
 		if len(torrents) <= 0 {
-			_ = resp.SendString("{response: 404, error: No results found}")
+			_ = resp.Redirect("/404")
 		} else {
 			_ = resp.Status(200).JSON(torrents)
 			// set torrents list to nil after sending JSON
@@ -25,7 +25,7 @@ func scrapeNyaa(resp *fiber.Ctx, searchUrl string) {
 	})
 
 	c.OnError(func(response *colly.Response, err error) {
-		_ = resp.SendString("{response: 404, error: Not Found}")
+		_ = resp.Redirect("/404")
 	})
 
 	_ = c.Visit(searchUrl)
@@ -74,7 +74,7 @@ func fileInfoScraper(resp *fiber.Ctx, searchUrl string) {
 	})
 
 	c.OnError(func(response *colly.Response, err error) {
-		_ = resp.SendString("{response: 404, error: Not Found}")
+		_ = resp.Redirect("/404")
 	})
 
 	c.OnScraped(func(response *colly.Response) {

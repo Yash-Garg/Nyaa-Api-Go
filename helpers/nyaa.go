@@ -20,7 +20,7 @@ func GetCategoryTorrents(resp *fiber.Ctx) error {
 	if category != "" {
 		searchUrl = fmt.Sprintf("%s?q=%s&c=%s&p=%d&s=%s&o=%s", baseUrl, strings.TrimSpace(query), category, pageNum, sortParam, sortOrder)
 	} else {
-		return resp.SendString("{response: 400, error: Invalid parameters}")
+		_ = resp.Redirect("/400")
 	}
 
 	scrapeNyaa(resp, searchUrl)
