@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/Yash-Garg/nyaa-api-go/models"
@@ -60,18 +61,19 @@ func fileInfoScraper(resp *fiber.Ctx, searchUrl string) {
 	c := colly.NewCollector()
 	t := models.File{}
 
-	c.OnHTML("div.panel:nth-child(1)", func(e *colly.HTMLElement) {
-		t.Title = e.ChildText("h3")
-		t.Size = e.ChildText("div.row:nth-child(4) .col-md-5:nth-child(2)")
-		t.File = baseUrl + e.ChildAttr("div.panel-footer a", "href")
-		t.Category = e.ChildText("div.row:nth-child(1) .col-md-5:nth-child(2)")
-		t.Uploaded = e.ChildText("div.row:nth-child(1) .col-md-5:nth-child(4)")
-		t.InfoHash = e.ChildText("div.row:nth-child(5) .col-md-5:nth-child(2)")
-		t.Magnet = e.ChildAttr("div.panel-footer a:nth-child(2)", "href")
-		t.SubmittedBy = e.ChildText("div.row:nth-child(2) .col-md-5:nth-child(2)")
-		t.Seeders, _ = strconv.Atoi(e.ChildText("div.row:nth-child(2) .col-md-5:nth-child(4)"))
-		t.Leechers, _ = strconv.Atoi(e.ChildText("div.row:nth-child(3) .col-md-5:nth-child(4)"))
+	c.OnHTML("div.container", func(element *colly.HTMLElement) {
+		t.Title = strings.TrimSpace(element.DOM.Find("h3.panel-title").First().Text())
+		t.File = baseUrl + element.ChildAttr("div.panel-footer a", "href")
 		t.Link = searchUrl
+		t.Magnet = element.ChildAttr("div.panel-footer a:nth-child(2)", "href")
+
+		t.Size = element.ChildText("div.panel-body div.row:nth-child(4) .col-md-5:nth-child(2)")
+		t.Category = element.ChildText("div.panel-body div.row:nth-child(1) .col-md-5:nth-child(2)")
+		t.Uploaded = element.ChildText("div.panel-body div.row:nth-child(1) .col-md-5:nth-child(4)")
+		t.InfoHash = element.ChildText("div.panel-body div.row:nth-child(5) .col-md-5:nth-child(2)")
+		t.SubmittedBy = element.ChildText("div.panel-body div.row:nth-child(2) .col-md-5:nth-child(2)")
+		t.Seeders, _ = strconv.Atoi(element.ChildText("div.panel-body div.row:nth-child(2) .col-md-5:nth-child(4)"))
+		t.Leechers, _ = strconv.Atoi(element.ChildText("div.panel-body div.row:nth-child(3) .col-md-5:nth-child(4)"))
 	})
 
 	c.OnError(func(response *colly.Response, err error) {
