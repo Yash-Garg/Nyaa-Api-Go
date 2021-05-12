@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"fmt"
-	"net/http"
 	"strconv"
 	"strings"
 
@@ -13,15 +12,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func CheckNyaaUrl() string {
-	_, err := http.Get(utils.NyaaBaseUrl)
-	if err != nil {
-		return utils.NyaaAltUrl
-	} else {
-		return utils.NyaaBaseUrl
-	}
-}
-
 func GetCategoryID(c string, s string) string {
 	if len(s) == 0 {
 		return utils.NyaaEndpoints[c]["all"]
@@ -31,85 +21,65 @@ func GetCategoryID(c string, s string) string {
 }
 
 func GetNyaa(resp *fiber.Ctx) error {
-	searchUrl := ""
+	var searchUrl string
 	baseUrl := CheckNyaaUrl()
+
 	searchQuery := strings.ReplaceAll(resp.Query("q"), " ", "+")
+	pageNum, _ := strconv.Atoi(resp.Query("p"))
+	sortOrder := resp.Query("o")
+	category := GetCategoryID(resp.Params("category"), resp.Params("sub_category"))
+	sortParam := resp.Query("s")
 
-	category := resp.Params("category")
-	if category == "id" || category == "user" {
-		return resp.Next()
+	if sortParam == "date" {
+		sortParam = "id"
+	}
+
+	if category != "" {
+		searchUrl = fmt.Sprintf("%s?q=%s&c=%s&p=%d&s=%s&o=%s", baseUrl, strings.TrimSpace(searchQuery), category, pageNum, sortParam, sortOrder)
 	} else {
+		return resp.SendString("{response: 400, error: Invalid parameters}")
+	}
 
-		pageNum, _ := strconv.Atoi(resp.Query("p"))
+	c := colly.NewCollector()
+	torrents := make([]models.Torrent, 0)
 
-		// Parameters Accepted - size | seeders | leechers | downloads | date
-		sortParam := resp.Query("s")
-		if sortParam == "date" {
-			sortParam = "id"
-		}
-
-		// Orders Accepted - asc | desc
-		sortOrder := resp.Query("o")
-
-		subCategory := GetCategoryID(category, resp.Params("sub_category"))
-
-		if subCategory != "" {
-			searchUrl = fmt.Sprintf("%s?q=%s&c=%s&p=%d&s=%s&o=%s", baseUrl, strings.TrimSpace(searchQuery), subCategory, pageNum, sortParam, sortOrder)
-		}
-
-		c := colly.NewCollector()
-		torrents := make([]models.Torrent, 0)
-
-		c.OnHTML("tbody", func(element *colly.HTMLElement) {
-			element.DOM.Each(func(i int, selection *goquery.Selection) {
-				t := models.Torrent{}
-				selection.Find("tr").Each(func(i int, selection *goquery.Selection) {
-					selection.Find("td:nth-child(2) a").Each(func(i int, selection *goquery.Selection) {
-						if !selection.HasClass("comments") {
-							t.Title, _ = selection.Attr("title")
-							torrentPath, _ := selection.Attr("href")
-							t.Link = baseUrl + torrentPath
-						}
-					})
-					t.Category, _ = selection.Find("td:nth-child(1) a").Attr("title")
-					filePath, _ := selection.Find("td:nth-child(3) a:nth-child(1)").Attr("href")
-					t.File = baseUrl + filePath
-					t.Magnet, _ = selection.Find("td:nth-child(3) a:nth-child(2)").Attr("href")
-					t.Size = selection.Find("td:nth-child(4)").Text()
-					t.Uploaded = selection.Find("td:nth-child(5)").Text()
-					t.Seeders, _ = strconv.Atoi(selection.Find("td:nth-child(6)").Text())
-					t.Leechers, _ = strconv.Atoi(selection.Find("td:nth-child(7)").Text())
-					torrents = append(torrents, t)
+	c.OnHTML("tbody", func(element *colly.HTMLElement) {
+		element.DOM.Each(func(i int, selection *goquery.Selection) {
+			t := models.Torrent{}
+			selection.Find("tr").Each(func(i int, selection *goquery.Selection) {
+				selection.Find("td:nth-child(2) a").Each(func(i int, selection *goquery.Selection) {
+					if !selection.HasClass("comments") {
+						t.Title, _ = selection.Attr("title")
+						torrentPath, _ := selection.Attr("href")
+						t.Link = baseUrl + torrentPath
+					}
 				})
+				t.Category, _ = selection.Find("td:nth-child(1) a").Attr("title")
+				filePath, _ := selection.Find("td:nth-child(3) a:nth-child(1)").Attr("href")
+				t.File = baseUrl + filePath
+				t.Magnet, _ = selection.Find("td:nth-child(3) a:nth-child(2)").Attr("href")
+				t.Size = selection.Find("td:nth-child(4)").Text()
+				t.Uploaded = selection.Find("td:nth-child(5)").Text()
+				t.Seeders, _ = strconv.Atoi(selection.Find("td:nth-child(6)").Text())
+				t.Leechers, _ = strconv.Atoi(selection.Find("td:nth-child(7)").Text())
+				torrents = append(torrents, t)
 			})
 		})
+	})
 
-		c.OnScraped(func(response *colly.Response) {
-			if len(torrents) <= 0 {
-				_ = resp.SendString("Error: No results found")
-			} else {
-				_ = resp.Status(200).JSON(torrents)
-			}
-		})
-
-		c.OnError(func(response *colly.Response, err error) {
-			fmt.Printf("{ response : %d, error: %s}", response.StatusCode, err)
-		})
-
-		err := c.Visit(searchUrl)
-		if err != nil {
-			_ = resp.SendString("Error: Invalid Parameters")
+	c.OnScraped(func(response *colly.Response) {
+		if len(torrents) <= 0 {
+			_ = resp.SendString("{response: 404, error: No results found}")
+		} else {
+			_ = resp.Status(200).JSON(torrents)
 		}
-	}
-	return nil
-}
+	})
 
-func GetUploadInfo(resp *fiber.Ctx) error {
-	_ = resp.SendString("Requested File ID - " + resp.Params("id"))
-	return nil
-}
+	c.OnError(func(response *colly.Response, err error) {
+		fmt.Printf("{ response : %d, error: %s}", response.StatusCode, err)
+	})
 
-func GetUserUploads(resp *fiber.Ctx) error {
-	_ = resp.SendString("Requested User ID - " + resp.Params("userID"))
+	_ = c.Visit(searchUrl)
+
 	return nil
 }
