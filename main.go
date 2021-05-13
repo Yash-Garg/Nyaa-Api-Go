@@ -1,14 +1,13 @@
 package main
 
 import (
-	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"os"
-
-	"github.com/gofiber/fiber/v2/middleware/basicauth"
 
 	"github.com/Yash-Garg/nyaa-api-go/helpers"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/basicauth"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/favicon"
 	log "github.com/sirupsen/logrus"
 )
 
