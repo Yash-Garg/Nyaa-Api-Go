@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Yash-Garg/nyaa-api-go/utils"
+	"github.com/Yash-Garg/nyaa-api-go/constants"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -14,11 +14,11 @@ func AliveHandler(ctx *fiber.Ctx) error {
 }
 
 func CheckNyaaUrl() string {
-	_, err := http.Get(utils.NyaaBaseUrl)
+	_, err := http.Get(constants.NyaaBaseUrl)
 	if err != nil {
-		return utils.NyaaAltUrl
+		return constants.NyaaAltUrl
 	} else {
-		return utils.NyaaBaseUrl
+		return constants.NyaaBaseUrl
 	}
 }
 
@@ -35,8 +35,8 @@ func GetSearchParameters(resp *fiber.Ctx) (string, string, string, int) {
 
 func GetCategoryID(c string, s string) string {
 	if len(s) == 0 {
-		return utils.NyaaEndpoints[c]["all"]
+		return constants.NyaaEndpoints[c]["all"]
 	} else {
-		return utils.NyaaEndpoints[c][s]
+		return constants.NyaaEndpoints[c][s]
 	}
 }

@@ -1,4 +1,4 @@
-package utils
+package constants
 
 var NyaaBaseUrl = "https://nyaa.si"
 var NyaaAltUrl = "https://rss.webhook08.cf"
