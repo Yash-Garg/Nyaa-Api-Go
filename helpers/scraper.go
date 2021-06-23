@@ -66,7 +66,7 @@ func fileInfoScraper(resp *fiber.Ctx, searchUrl string) {
 		t.File = baseUrl + element.ChildAttr("div.panel-footer a", "href")
 		t.Link = searchUrl
 		t.Magnet = element.ChildAttr("div.panel-footer a:nth-child(2)", "href")
-
+		t.Description = element.ChildText("div.panel-body#torrent-description")
 		t.Size = element.ChildText("div.panel-body div.row:nth-child(4) .col-md-5:nth-child(2)")
 		t.Category = element.ChildText("div.panel-body div.row:nth-child(1) .col-md-5:nth-child(2)")
 		t.Uploaded = element.ChildText("div.panel-body div.row:nth-child(1) .col-md-5:nth-child(4)")

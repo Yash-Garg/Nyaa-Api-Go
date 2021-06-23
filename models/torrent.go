@@ -14,6 +14,7 @@ type Torrent struct {
 
 type File struct {
 	Torrent
+	Description string `json:"description"`
 	SubmittedBy string `json:"submittedBy"`
 	InfoHash    string `json:"infoHash"`
 }
