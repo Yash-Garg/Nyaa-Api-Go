@@ -42,6 +42,7 @@ func torrentScraper(element *colly.HTMLElement) {
 					t.Title, _ = selection.Attr("title")
 					torrentPath, _ := selection.Attr("href")
 					t.Link = baseUrl + torrentPath
+					t.ID, _ = strconv.Atoi(strings.Split(torrentPath, "/")[2])
 				}
 			})
 			t.Category, _ = selection.Find("td:nth-child(1) a").Attr("title")
@@ -65,6 +66,7 @@ func fileInfoScraper(resp *fiber.Ctx, searchUrl string) {
 		t.Title = strings.TrimSpace(element.DOM.Find("h3.panel-title").First().Text())
 		t.File = baseUrl + element.ChildAttr("div.panel-footer a", "href")
 		t.Link = searchUrl
+		t.ID, _ = strconv.Atoi(strings.Split(searchUrl, "/")[4])
 		t.Magnet = element.ChildAttr("div.panel-footer a:nth-child(2)", "href")
 		t.Description = element.ChildText("div.panel-body#torrent-description")
 		t.Size = element.ChildText("div.panel-body div.row:nth-child(4) .col-md-5:nth-child(2)")

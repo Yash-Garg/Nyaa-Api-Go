@@ -1,6 +1,7 @@
 package models
 
 type Torrent struct {
+	ID       int    `json:"id"`
 	Title    string `json:"title"`
 	Category string `json:"category"`
 	Uploaded string `json:"uploaded"`
