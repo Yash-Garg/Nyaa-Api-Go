@@ -53,6 +53,7 @@ func torrentScraper(element *colly.HTMLElement) {
 			t.Uploaded = selection.Find("td:nth-child(5)").Text()
 			t.Seeders, _ = strconv.Atoi(selection.Find("td:nth-child(6)").Text())
 			t.Leechers, _ = strconv.Atoi(selection.Find("td:nth-child(7)").Text())
+			t.Completed, _ = strconv.Atoi(selection.Find("td:nth-child(8)").Text())
 			torrents = append(torrents, t)
 		})
 	})
@@ -76,6 +77,7 @@ func fileInfoScraper(resp *fiber.Ctx, searchUrl string) {
 		t.SubmittedBy = element.ChildText("div.panel-body div.row:nth-child(2) .col-md-5:nth-child(2)")
 		t.Seeders, _ = strconv.Atoi(element.ChildText("div.panel-body div.row:nth-child(2) .col-md-5:nth-child(4)"))
 		t.Leechers, _ = strconv.Atoi(element.ChildText("div.panel-body div.row:nth-child(3) .col-md-5:nth-child(4)"))
+		t.Completed, _ = strconv.Atoi(element.ChildText("div.panel-body div.row:nth-child(4) .col-md-5:nth-child(4)"))
 	})
 
 	c.OnError(func(response *colly.Response, err error) {
