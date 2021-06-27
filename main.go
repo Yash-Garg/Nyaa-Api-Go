@@ -8,6 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/basicauth"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/favicon"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -26,6 +27,8 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New())
+	app.Use(limiter.New())
+
 	app.Use(favicon.New(favicon.Config{File: "static/favicon.png"}))
 	app.Use(basicauth.New(basicauth.Config{
 		Users: map[string]string{
