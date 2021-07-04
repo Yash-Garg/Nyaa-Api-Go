@@ -17,11 +17,7 @@ func GetCategoryTorrents(resp *fiber.Ctx) error {
 	category := GetCategoryID(resp.Params("category"), resp.Params("sub_category"))
 	query, sortParam, sortOrder, pageNum := GetSearchParameters(resp)
 
-	if category != "" {
-		searchUrl = fmt.Sprintf("%s?q=%s&c=%s&p=%d&s=%s&o=%s", baseUrl, strings.TrimSpace(query), category, pageNum, sortParam, sortOrder)
-	} else {
-		_ = resp.Redirect("/400")
-	}
+	searchUrl = fmt.Sprintf("%s?q=%s&c=%s&p=%d&s=%s&o=%s", baseUrl, strings.TrimSpace(query), category, pageNum, sortParam, sortOrder)
 
 	scrapeNyaa(resp, searchUrl)
 	return nil

@@ -36,6 +36,8 @@ func GetSearchParameters(resp *fiber.Ctx) (string, string, string, int) {
 func GetCategoryID(c string, s string) string {
 	if len(s) == 0 {
 		return constants.NyaaEndpoints[c]["all"]
+	} else if c == "all" {
+		return ""
 	} else {
 		return constants.NyaaEndpoints[c][s]
 	}
