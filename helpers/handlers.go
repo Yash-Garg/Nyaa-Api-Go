@@ -22,15 +22,16 @@ func CheckNyaaUrl() string {
 	}
 }
 
-func GetSearchParameters(resp *fiber.Ctx) (string, string, string, int) {
+func GetSearchParameters(resp *fiber.Ctx) (string, string, string, int, int) {
 	q := strings.ReplaceAll(resp.Query("q"), " ", "+")
 	p, _ := strconv.Atoi(resp.Query("p"))
 	o := resp.Query("o")
 	s := resp.Query("s")
+	f, _ := strconv.Atoi(resp.Query("f"))
 	if s == "date" {
 		s = "id"
 	}
-	return q, s, o, p
+	return q, s, o, p, f
 }
 
 func GetCategoryID(c string, s string) string {
