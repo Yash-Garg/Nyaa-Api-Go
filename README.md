@@ -6,7 +6,7 @@ Made for fun, you can use [Nyaa API](https://github.com/Vivek-Kolhe/Nyaa-API) by
 
 ## Usage
 
-- `username` and `id` are required parameters if using `/id/{id}` and `/user/{username}` endpoints.
+- `username` and `id` are required parameters if using `/user/{username}` and `/id/{id}` endpoints.
 
 - If no parameters are specified in other endpoints like `/anime`, `/manga`, etc. It will return the latest uploaded torrents in the respective category.
 
@@ -18,7 +18,7 @@ Made for fun, you can use [Nyaa API](https://github.com/Vivek-Kolhe/Nyaa-API) by
 	| `q` **(Optional)** | Search query. |
 	| `s` **(Optional)** | Sorting parameter |
 	| `p` **(Optional)** | Page number |
-	| `f` **(Optional)** | Filter Option |
+	| `f` **(Optional)** | Filter option |
 	| `o` **(Optional)** | Order of sorting. Defaults to **_Descending order_**. |
 
 	-   **Endpoints**
