@@ -1,7 +1,7 @@
 package constants
 
 var NyaaBaseUrl = "https://nyaa.si"
-var NyaaAltUrl = "https://rss.webhook08.cf"
+var NyaaAltUrl = "https://nyaa.archivists.workers.dev"
 
 var NyaaEndpoints = map[string]map[string]string{
 	"anime": {
