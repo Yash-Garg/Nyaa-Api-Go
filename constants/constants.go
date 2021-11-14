@@ -1,7 +1,7 @@
 package constants
 
 var NyaaBaseUrl = "https://nyaa.si"
-var NyaaAltUrl = "https://nyaa.archivists.workers.dev"
+var NyaaAltUrl = "https://nyaa.kryptk.ml"
 
 var NyaaEndpoints = map[string]map[string]string{
 	"anime": {
