@@ -1,13 +1,13 @@
 package helpers
 
 import (
-	"strconv"
-	"strings"
-
 	"github.com/PuerkitoBio/goquery"
+	"github.com/Yash-Garg/nyaa-api-go/constants"
 	"github.com/Yash-Garg/nyaa-api-go/models"
 	"github.com/gocolly/colly/v2"
 	"github.com/gofiber/fiber/v2"
+	"strconv"
+	"strings"
 )
 
 func scrapeNyaa(resp *fiber.Ctx, searchUrl string) {
@@ -78,6 +78,21 @@ func fileInfoScraper(resp *fiber.Ctx, searchUrl string) {
 		t.Seeders, _ = strconv.Atoi(element.ChildText("div.panel-body div.row:nth-child(2) .col-md-5:nth-child(4)"))
 		t.Leechers, _ = strconv.Atoi(element.ChildText("div.panel-body div.row:nth-child(3) .col-md-5:nth-child(4)"))
 		t.Completed, _ = strconv.Atoi(element.ChildText("div.panel-body div.row:nth-child(4) .col-md-5:nth-child(4)"))
+		comments := strings.Split(element.ChildText("div#comments h3.panel-title"), "-")
+		if len(comments) > 1 {
+			t.CommentInfo.Count, _ = strconv.Atoi(strings.TrimSpace(comments[1]))
+		}
+
+		if t.CommentInfo.Count > 0 {
+			element.DOM.Find("div.container div#comments div.comment-panel").Each(func(i int, selection *goquery.Selection) {
+				t.CommentInfo.Comments = append(t.CommentInfo.Comments, models.Comment{
+					Name:      selection.Find("a").First().Text(),
+					Content:   selection.Find("div.comment-body div.comment-content").Text(),
+					Image:     selection.Find("img.avatar").AttrOr("src", constants.DefaultProfilePic),
+					Timestamp: selection.Find("a").Children().First().Text(),
+				})
+			})
+		}
 	})
 
 	c.OnError(func(response *colly.Response, err error) {

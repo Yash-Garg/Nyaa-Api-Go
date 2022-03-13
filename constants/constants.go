@@ -3,6 +3,8 @@ package constants
 var NyaaBaseUrl = "https://nyaa.si"
 var NyaaAltUrl = "https://nyaa.kryptk.ml"
 
+var DefaultProfilePic = "https://raw.githubusercontent.com/Yash-Garg/Nyaa-Api-Go/dev/static/default.png"
+
 var NyaaEndpoints = map[string]map[string]string{
 	"anime": {
 		"all":     "1_0",
