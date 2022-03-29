@@ -32,7 +32,7 @@ func main() {
 	app.Use(favicon.New(favicon.Config{File: "static/favicon.png"}))
 	app.Use(basicauth.New(basicauth.Config{
 		Users: map[string]string{
-			"admin": "pass#1803",
+			"admin": "pass1234",
 		},
 	}))
 
