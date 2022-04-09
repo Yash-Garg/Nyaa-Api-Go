@@ -1,4 +1,4 @@
-# Nyaa-Api-Go
+# Nyaa-Api-Go [![Better Uptime Badge](https://betteruptime.com/status-badges/v1/monitor/dkw3.svg)](https://status.yashgarg.dev/)
 
 This API is an **Unofficial Nyaa API** used for searching torrents.
 
