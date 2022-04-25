@@ -45,13 +45,5 @@ func main() {
 	app.Get("/user/:username", helpers.GetUserUploads)
 	app.Get("/:category/:sub_category?", helpers.GetCategoryTorrents)
 
-	sslCert := os.Getenv("SSL_CERT")
-	sslKey := os.Getenv("SSL_KEY")
-	port := getPort()
-
-	if sslKey != "" && sslCert != "" {
-		_ = app.ListenTLS(port, sslCert, sslKey)
-	} else {
-		_ = app.Listen(port)
-	}
+	_ = app.Listen(getPort())
 }
