@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/gocolly/colly/v2 v2.1.0
-	github.com/gofiber/fiber/v2 v2.34.0
+	github.com/gofiber/fiber/v2 v2.35.0
 	github.com/sirupsen/logrus v1.8.1
 )
 
@@ -23,7 +23,7 @@ require (
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca // indirect
 	github.com/temoto/robotstxt v1.1.2 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.37.0 // indirect
+	github.com/valyala/fasthttp v1.38.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	golang.org/x/net v0.0.0-20220412020605-290c469a71a5 // indirect
 	golang.org/x/sys v0.0.0-20220412211240-33da011f77ad // indirect
