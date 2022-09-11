@@ -1,7 +1,7 @@
 package constants
 
 var NyaaBaseUrl = "https://nyaa.si"
-var NyaaAltUrl = "https://nyaa.kryptk.ml"
+var NyaaAltUrl = "https://nyaa.smartass08.dev"
 
 var DefaultProfilePic = "https://raw.githubusercontent.com/Yash-Garg/Nyaa-Api-Go/dev/static/default.png"
 
